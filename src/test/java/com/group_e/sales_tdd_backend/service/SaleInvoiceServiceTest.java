@@ -2,16 +2,24 @@ package com.group_e.sales_tdd_backend.service;
 
 import com.group_e.sales_tdd_backend.dto.request.SaleInvoiceItemRegistrationRequest;
 import com.group_e.sales_tdd_backend.dto.request.SaleInvoiceRegistrationRequest;
-import com.group_e.sales_tdd_backend.dto.response.SaleInvoiceItemResponse;
 import com.group_e.sales_tdd_backend.dto.response.SaleInvoiceResponse;
 import com.group_e.sales_tdd_backend.entity.*;
+import com.group_e.sales_tdd_backend.mapper.SaleInvoiceItemMapper;
+import com.group_e.sales_tdd_backend.mapper.SaleInvoiceMapper;
+import com.group_e.sales_tdd_backend.service.impl.SaleInvoiceServiceImpl;
 import com.group_e.sales_tdd_backend.use_case.customer.GetCustomerByIdUseCase;
 import com.group_e.sales_tdd_backend.use_case.payment_condition.GetPaymentConditionByIdUseCase;
 import com.group_e.sales_tdd_backend.use_case.product.GetProductByIdUseCase;
+import com.group_e.sales_tdd_backend.use_case.sale_invoice.SaveSaleInvoiceUseCase;
+import com.group_e.sales_tdd_backend.use_case.sale_invoice_item.SaveAllSaleInvoiceItemsUseCase;
 import com.group_e.sales_tdd_backend.use_case.warehouse.GetWarehouseByIdUseCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -19,9 +27,14 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class SaleInvoiceServiceTest {
+    @InjectMocks
+    private SaleInvoiceServiceImpl saleInvoiceService;
     @Mock
     private GetCustomerByIdUseCase getCustomerByIdUseCase;
     @Mock
@@ -30,8 +43,20 @@ public class SaleInvoiceServiceTest {
     private GetPaymentConditionByIdUseCase getPaymentConditionByIdUseCase;
     @Mock
     private GetProductByIdUseCase getProductByIdUseCase;
-    @InjectMocks
-    private SaleInvoiceService saleInvoiceService;
+    @Mock
+    private SaveSaleInvoiceUseCase saveSaleInvoiceUseCase;
+    @Mock
+    private SaveAllSaleInvoiceItemsUseCase saveAllSaleInvoiceItemsUseCase;
+    @Mock
+    private SaleInvoiceMapper saleInvoiceMapper;
+    @Mock
+    private SaleInvoiceItemMapper saleInvoiceItemMapper;
+
+    @Captor
+    private ArgumentCaptor<SaleInvoice> saleInvoiceCaptor;
+    @Captor
+    private ArgumentCaptor<List<SaleInvoiceItem>> saleInvoiceItemsCaptor;
+
 
     @Test
     void shouldCalculateDiscountCorrectly_whenCustomerAndProductHaveDiscounts() {
@@ -78,23 +103,33 @@ public class SaleInvoiceServiceTest {
                 List.of(new SaleInvoiceItemRegistrationRequest(product.getId(), 2))
         );
 
+        SaleInvoice saleInvoice = new SaleInvoice();
+        saleInvoice.setId(UUID.randomUUID());
+
         when(getCustomerByIdUseCase.execute(customer.getId())).thenReturn(customer);
         when(getWarehouseByIdUseCase.execute(warehouse.getId())).thenReturn(warehouse);
         when(getPaymentConditionByIdUseCase.execute(paymentCondition.getId())).thenReturn(paymentCondition);
         when(getProductByIdUseCase.execute(product.getId())).thenReturn(product);
+        when(saveSaleInvoiceUseCase.execute(any())).thenReturn(saleInvoice);
+        when(saleInvoiceMapper.toResponse(any())).thenReturn(new SaleInvoiceResponse());
 
-        SaleInvoiceResponse response = saleInvoiceService.registerSaleInvoice(request);
+        saleInvoiceService.registerSaleInvoice(request);
 
-        assertThat(response.getCustomerGroupDiscountPercentage()).isEqualByComparingTo("8.00");
-        assertThat(response.getTotalAmount()).isEqualByComparingTo("100.00");
+        verify(saveSaleInvoiceUseCase).execute(saleInvoiceCaptor.capture());
+        SaleInvoice capturedSaleInvoice = saleInvoiceCaptor.getValue();
 
-        SaleInvoiceItemResponse item = response.getSaleInvoiceItems().getFirst();
+        assertThat(capturedSaleInvoice.getCustomerGroupDiscountPercentage()).isEqualByComparingTo("8.00");
+        assertThat(capturedSaleInvoice.getTotalAmount()).isEqualByComparingTo("89.00");
 
-        assertThat(item.getUnitPrice()).isEqualByComparingTo("50.00");
-        assertThat(item.getQuantity()).isEqualByComparingTo(2);
-        assertThat(item.getProductGroupDiscountPercentage()).isEqualByComparingTo("3.00");
-        assertThat(item.getTotalDiscountPercentage()).isEqualByComparingTo("11.00");
-        assertThat(item.getTotalDiscountAmount()).isEqualByComparingTo("11.00");
-        assertThat(item.getFinalAmount()).isEqualByComparingTo("89.00");
+        verify(saveAllSaleInvoiceItemsUseCase).execute(saleInvoiceItemsCaptor.capture());
+        List<SaleInvoiceItem> capturedSaleInvoiceItems = saleInvoiceItemsCaptor.getValue();
+        SaleInvoiceItem saleInvoiceItem = capturedSaleInvoiceItems.getFirst();
+
+        assertThat(saleInvoiceItem.getUnitPrice()).isEqualByComparingTo("50.00");
+        assertThat(saleInvoiceItem.getQuantity()).isEqualByComparingTo(2);
+        assertThat(saleInvoiceItem.getProductGroupDiscountPercentage()).isEqualByComparingTo("3.00");
+        assertThat(saleInvoiceItem.getTotalDiscountPercentage()).isEqualByComparingTo("11.00");
+        assertThat(saleInvoiceItem.getTotalDiscountAmount()).isEqualByComparingTo("11.00");
+        assertThat(saleInvoiceItem.getFinalAmount()).isEqualByComparingTo("89.00");
     }
 }

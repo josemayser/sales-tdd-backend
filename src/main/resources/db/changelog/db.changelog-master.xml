@@ -3,4 +3,49 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="20250720-01"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-01-uuid-ossp-extension.sql">
+        <sqlFile path="db.20250720-01-uuid-ossp-extension.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-02"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-02-customer-groups-table.sql">
+        <sqlFile path="db.20250720-02-customer-groups-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-03"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-03-customers-table.sql">
+        <sqlFile path="db.20250720-03-customers-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-04"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-04-warehouses-table.sql">
+        <sqlFile path="db.20250720-04-warehouses-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-05"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-05-payment-conditions-table.sql">
+        <sqlFile path="db.20250720-05-payment-conditions-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-06"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-06-product-groups-table.sql">
+        <sqlFile path="db.20250720-06-product-groups-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-07"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-07-products-table.sql">
+        <sqlFile path="db.20250720-07-products-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-08"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-08-sale-invoices-table.sql">
+        <sqlFile path="db.20250720-08-sale-invoices-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="20250720-09"
+               author="Jose Andres Mayser Vasquez"
+               logicalFilePath="db/changelog/db.20250720-09-sale-invoice-items-table.sql">
+        <sqlFile path="db.20250720-09-sale-invoice-items-table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>
