@@ -19,5 +19,7 @@ public class CustomerResponse {
     private Timestamp updatedAt;
     private String name;
     private String code;
+    private String dni;
+    private String email;
     private CustomerGroupResponse customerGroup;
 }

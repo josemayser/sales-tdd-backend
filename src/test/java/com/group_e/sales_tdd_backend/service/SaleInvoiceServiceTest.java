@@ -77,6 +77,8 @@ public class SaleInvoiceServiceTest {
                 now,
                 "Juan Pérez",
                 "CUS-001",
+                "123456789",
+                "test@test.com",
                 customerGroup
         );
 

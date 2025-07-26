@@ -39,6 +39,12 @@ public class Customer {
     @Column(unique = true, nullable = false, length = 64)
     private String code;
 
+    @Column(nullable = false, length = 256)
+    private String dni;
+
+    @Column(nullable = false, length = 256)
+    private String email;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_group_id", referencedColumnName = "id", insertable = false, updatable = false)
     private CustomerGroup customerGroup;

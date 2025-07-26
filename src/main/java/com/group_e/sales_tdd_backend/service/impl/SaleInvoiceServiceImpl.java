@@ -59,6 +59,9 @@ public class SaleInvoiceServiceImpl implements SaleInvoiceService {
     public SaleInvoiceResponse registerSaleInvoice(SaleInvoiceRegistrationRequest request)
             throws CustomerNotFoundException, WarehouseNotFoundException, PaymentConditionNotFoundException,
             ProductNotFoundException {
+        if (request.getTaxName() == null) {
+            throw new IllegalArgumentException("Tax name cannot be null");
+        }
         Customer customer = getCustomerByIdUseCase.execute(request.getCustomerId());
         Warehouse warehouse = getWarehouseByIdUseCase.execute(request.getWarehouseId());
         PaymentCondition paymentCondition = getPaymentConditionByIdUseCase.execute(request.getPaymentConditionId());

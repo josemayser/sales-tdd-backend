@@ -13,6 +13,8 @@ import com.group_e.sales_tdd_backend.use_case.customer.GetCustomerByCodeUseCase;
 import com.group_e.sales_tdd_backend.use_case.customer.GetCustomersUseCase;
 import com.group_e.sales_tdd_backend.use_case.customer.SaveCustomerUseCase;
 import com.group_e.sales_tdd_backend.use_case.customer_group.GetCustomerGroupByIdUseCase;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponse registerCustomer(CustomerRegistrationRequest request)
-            throws CustomerGroupNotFoundException, CustomerAlreadyExistsException {
+            throws CustomerGroupNotFoundException, CustomerAlreadyExistsException, AddressException {
+        isValidEmail(request.getEmail());
         CustomerGroup customerGroup = getCustomerGroupByIdUseCase.execute(request.getCustomerGroupId());
         String code = request.getCode();
         try {
@@ -51,5 +54,15 @@ public class CustomerServiceImpl implements CustomerService {
         Customer savedCustomer = saveCustomerUseCase.execute(newCustomer);
         savedCustomer.setCustomerGroup(customerGroup);
         return customerMapper.toResponse(savedCustomer);
+    }
+
+    private boolean isValidEmail(String email) throws AddressException {
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+            return true;
+        } catch (AddressException ex) {
+            throw ex;
+        }
     }
 }

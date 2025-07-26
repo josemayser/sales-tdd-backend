@@ -9,6 +9,7 @@ import com.group_e.sales_tdd_backend.exception.customer_group.CustomerGroupAlrea
 import com.group_e.sales_tdd_backend.exception.customer_group.CustomerGroupNotFoundException;
 import com.group_e.sales_tdd_backend.service.CustomerGroupService;
 import com.group_e.sales_tdd_backend.service.CustomerService;
+import jakarta.mail.internet.AddressException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class CustomerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerResponse registerCustomer(@Valid @RequestBody CustomerRegistrationRequest request)
-            throws CustomerGroupNotFoundException, CustomerAlreadyExistsException {
+            throws CustomerGroupNotFoundException, CustomerAlreadyExistsException, AddressException {
         return customerService.registerCustomer(request);
     }
 }

@@ -48,4 +48,9 @@
                logicalFilePath="db/changelog/db.20250720-09-sale-invoice-items-table.sql">
         <sqlFile path="db.20250720-09-sale-invoice-items-table.sql" relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="20250727-09"
+               author="Fito Medina"
+               logicalFilePath="db/changelog/db.20250725-09-update-customer.sql">
+        <sqlFile path="db.20250725-09-update-customer.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>
